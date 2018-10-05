@@ -1,0 +1,12 @@
+{
+    "name": "gourry/gazprom",
+    "description": "Howework for gazprom",
+    "type": "project",
+    "authors": [
+        {
+            "name": "katin-dev",
+            "email": "katin.dev@gmail.com"
+        }
+    ],
+    "require": {}
+}
