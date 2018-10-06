@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use App\Container;
+use App\Lib\Container;
 use App\Lib\LogReader;
 use PDO;
 use Symfony\Component\Console\Command\Command;
@@ -37,6 +37,7 @@ class ImportCommand extends Command
         $files = $this->settings['files'];
 
         // @TODO нверное такие классы уже написаны
+        // @TODO добавить возомжность append
         $output->writeln("Import data from " . realpath($files['visitors']));
 
         $this->db->beginTransaction();

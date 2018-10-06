@@ -1,7 +1,9 @@
 <?php
 
-use App\Container;
+use App\Action\IndexAction;
+use App\Lib\Container;
 use Slim\App;
+use Slim\Views\Twig;
 
 // Загружаем настройки приложения
 $config = require __DIR__ . '/config.php';
@@ -14,6 +16,7 @@ $container = new Container([
     'settings' => $config
 ]);
 
+// База данных
 $container['db'] = function (Container $c) {
     $config = parse_url($c->settings['db']);
     if (!$config) {
@@ -27,10 +30,21 @@ $container['db'] = function (Container $c) {
     );
 };
 
+// Шаблонизатор
+$container['view'] = function (Container $c) {
+    $view = new Twig($c->settings['template_path'], [
+        'cache' => $c->settings['template_cache_path']
+    ]);
+
+    // Instantiate and add Slim specific extension
+    $basePath = rtrim(str_ireplace('index.php', '', $c->get('request')->getUri()->getBasePath()), '/');
+    $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $basePath));
+
+    return $view;
+};
+
 $app = new App($container);
 
-$app->get('/', function () {
-    $this->db;
-});
+$app->get('/', IndexAction::class);
 
 return $app;

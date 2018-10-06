@@ -1,9 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Lib;
 
 /**
  * @property \PDO $db
+ * @property \Slim\Views\Twig $view
  */
 class Container extends \Slim\Container
 {
