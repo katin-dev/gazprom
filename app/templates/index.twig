@@ -10,8 +10,8 @@
         <table class="table">
             <tr>
                 <th>IP</th>
-                <th>Browser</th>
-                <th>OS</th>
+                <th><a href="#" data-name="browser">Browser</a></th>
+                <th><a href="#" data-name="os">OS</a></th>
                 <th>Source</th>
                 <th>Last page</th>
                 <th>Total pages</th>
@@ -28,29 +28,8 @@
             {{/each}}
         </table>
     </script>
+    <script src="/app.js"></script>
     <script>
-        var App = function () {
-            var self = this;
-            this.container = null;
-            this.tableTemplate = document.getElementById("entry-template").innerHTML;
-
-            this.init = function (container) {
-                this.container = $(container);
-                this.featchData();
-            };
-
-            this.featchData = function () {
-                $.get('/api/v1/visits', function (response) {
-                    var template = Handlebars.compile(self.tableTemplate);
-                    var html = template({
-                        visits: response.visits
-                    });
-
-                    self.container.html(html);
-                });
-            };
-        };
-
         $(function () {
             var app = new App();
             app.init(document.getElementById('app'));

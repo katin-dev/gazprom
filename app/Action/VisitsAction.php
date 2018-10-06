@@ -14,6 +14,9 @@ class VisitsAction extends ActionAbstract
         $pageNumber = 0;
         $offset = $pageNumber * $onPage;
 
+        $sortBy    = $this->getWhitelistedRequestParam('sort_by', $request, ['browser', 'os']);
+        $sortOrder = $this->getWhitelistedRequestParam('sort_order', $request, ['asc', 'desc']);
+
         $sql = "
             SELECT vr.ip, vr.browser, vr.os , vf.referer as first_referer, vl.path as last_path, t.unique_visits
             FROM (
@@ -24,11 +27,13 @@ class VisitsAction extends ActionAbstract
             ) as t
             JOIN visit vf ON vf.id = t.first_visit_id
             JOIN visit vl ON vl.id = t.last_visit_id
-            JOIN visitor vr ON vr.ip = t.ip;
+            JOIN visitor vr ON vr.ip = t.ip
+            ORDER BY `$sortBy` $sortOrder
         ";
 
         $stmt = $this->container->db->prepare($sql);
         $status = $stmt->execute([
+
         ]);
 
         if ($status === false) {
@@ -40,5 +45,18 @@ class VisitsAction extends ActionAbstract
         return $response->withJson([
             'visits' => $visits
         ]);
+    }
+
+    /**
+     * Получим значение из запроса, ограниченное по whitelist
+     * @param string $name - наименование параметра в запросе
+     * @param Request $request
+     * @param array $whitelist - список разрешённых значений
+     * @return string
+     */
+    private function getWhitelistedRequestParam($name, Request $request, array $whitelist)
+    {
+        $value = $request->getQueryParam($name);
+        return in_array($value, $whitelist) ? $value : $whitelist[0];
     }
 }
