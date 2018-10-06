@@ -1,6 +1,7 @@
 <?php
 
 use App\Action\IndexAction;
+use App\Action\VisitsAction;
 use App\Lib\Container;
 use Slim\App;
 use Slim\Views\Twig;
@@ -33,7 +34,8 @@ $container['db'] = function (Container $c) {
 // Шаблонизатор
 $container['view'] = function (Container $c) {
     $view = new Twig($c->settings['template_path'], [
-        'cache' => $c->settings['template_cache_path']
+        // 'cache' => $c->settings['template_cache_path']
+        'cache' => false
     ]);
 
     // Instantiate and add Slim specific extension
@@ -46,5 +48,6 @@ $container['view'] = function (Container $c) {
 $app = new App($container);
 
 $app->get('/', IndexAction::class);
+$app->get('/api/v1/visits', VisitsAction::class);
 
 return $app;

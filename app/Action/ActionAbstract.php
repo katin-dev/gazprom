@@ -11,9 +11,13 @@ abstract class ActionAbstract
     /** @var \Slim\Views\Twig */
     protected $view;
 
+    /** @var Container */
+    protected $container;
+
     public function __construct(Container $container)
     {
         $this->view = $container->view;
+        $this->container = $container;
     }
 
     abstract public function __invoke(Request $request, Response $response);
