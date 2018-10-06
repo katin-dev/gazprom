@@ -5,6 +5,9 @@ use Slim\App;
 
 // Загружаем настройки приложения
 $config = require __DIR__ . '/config.php';
+if (file_exists(__DIR__ . '/config.loc.php')) {
+    $config = array_merge($config, include __DIR__ . '/config.loc.php');
+}
 
 // Создаём контейнер для хранения сервисов
 $container = new Container([
