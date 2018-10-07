@@ -5,35 +5,5 @@
 {% endblock %}
 
 {% block body_script %}
-    {% verbatim %}
-    <script id="entry-template" type="text/x-handlebars-template" src="/">
-        <table class="table">
-            <tr>
-                <th>IP</th>
-                <th><a href="#" data-name="browser">Browser</a></th>
-                <th><a href="#" data-name="os">OS</a></th>
-                <th>Source</th>
-                <th>Last page</th>
-                <th>Total pages</th>
-            </tr>
-            {{#each visits}}
-            <tr>
-                <td>{{ip}}</td>
-                <td>{{browser}}</td>
-                <td>{{os}}</td>
-                <td>{{first_referer}}</td>
-                <td>{{last_path}}</td>
-                <td>{{unique_visits}}</td>
-            </tr>
-            {{/each}}
-        </table>
-    </script>
-    <script src="/app.js"></script>
-    <script>
-        $(function () {
-            var app = new App();
-            app.init(document.getElementById('app'));
-        });
-    </script>
-    {% endverbatim %}
+    <script src="js/app.js"></script>
 {% endblock %}

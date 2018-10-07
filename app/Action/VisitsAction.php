@@ -23,12 +23,12 @@ class VisitsAction extends ActionAbstract
                 SELECT ip, MIN(id) as first_visit_id, MAX(id) as last_visit_id, COUNT(DISTINCT path) as unique_visits
                 FROM visit 
                 GROUP BY ip
-                LIMIT $offset, $onPage
             ) as t
             JOIN visit vf ON vf.id = t.first_visit_id
             JOIN visit vl ON vl.id = t.last_visit_id
             JOIN visitor vr ON vr.ip = t.ip
             ORDER BY `$sortBy` $sortOrder
+            LIMIT $offset, $onPage
         ";
 
         $stmt = $this->container->db->prepare($sql);
