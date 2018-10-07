@@ -8,10 +8,19 @@ class App extends React.Component {
                 name: 'ip',
                 order: 'asc'
             },
-            visits: []
+            filter: {
+                ip : ''
+            },
+            visits: [],
+            pagination: {
+                current : 1,
+                total   : 1
+            }
         } ;
 
         this.setOrderBy = this.setOrderBy.bind(this);
+        this.setFilter = this.setFilter.bind(this);
+        this.setPageNumber = this.setPageNumber.bind(this);
     }
 
     componentDidMount() {
@@ -21,11 +30,17 @@ class App extends React.Component {
     loadData() {
         let params = {
             sort_by : this.state.order_by.name,
-            sort_order : this.state.order_by.order
+            sort_order : this.state.order_by.order,
+            filter: this.state.filter,
+            page: this.state.pagination.current
         };
         $.get('/api/v1/visits', params, (response)  => {
             this.setState({
-                visits: response.visits
+                visits: response.visits,
+                pagination: {
+                    current : this.state.pagination.current,
+                    total   : response.page_count
+                }
             });
         });
     }
@@ -51,6 +66,25 @@ class App extends React.Component {
         });
     }
 
+    setFilter(name, value) {
+        let state = Object.assign({}, this.state);
+        state.filter[name] = value;
+        state.pagination.current = 1;
+
+        this.setState(state, () => {
+            this.loadData();
+        });
+    }
+
+    setPageNumber(number) {
+        let state = Object.assign({}, this.state);
+        state.pagination.current = number;
+
+        this.setState(state, () => {
+            this.loadData();
+        });
+    }
+
     render() {
         if (this.state.liked) {
             return 'You liked this.';
@@ -59,7 +93,15 @@ class App extends React.Component {
         return (
             <div>
                 <h1>Посетители</h1>
-                <Table visits={this.state.visits} onSetOrder={this.setOrderBy} />
+                <Table
+                    visits={this.state.visits}
+                    filter={this.state.filter}
+                    totalPages={this.state.pagination.total}
+                    currentPage={this.state.pagination.current}
+                    onSetOrder={this.setOrderBy}
+                    onSetFilter={this.setFilter}
+                    onSetPageNumber={this.setPageNumber}
+                />
             </div>
         );
     }
@@ -70,10 +112,20 @@ class Table extends React.Component {
     constructor(props) {
         super(props);
         this.setOrderBy = this.setOrderBy.bind(this);
+        this.setFilter  = this.setFilter.bind(this);
+        this.setPageNumber  = this.setPageNumber.bind(this);
     }
 
     setOrderBy(fieldName) {
         this.props.onSetOrder(fieldName);
+    }
+
+    setFilter(event) {
+        this.props.onSetFilter('ip', event.target.value);
+    }
+
+    setPageNumber(event) {
+        this.props.onSetPageNumber(event.target.getAttribute('data-page'));
     }
 
     render() {
@@ -92,12 +144,27 @@ class Table extends React.Component {
             )
         });
 
+
+        let nav = [];
+        for (let i = 1; i <= this.props.totalPages; i ++) {
+            let classNames = ['page-item'];
+            if (i == this.props.currentPage) {
+                classNames.push('active');
+            }
+            nav.push(
+                <li className={classNames.join(' ')} key={'p' + i}><a className="page-link" href="#" data-page={i} onClick={this.setPageNumber}>{i}</a></li>
+            );
+        }
+
         return (
             <div>
                 <table className="table">
                     <thead>
                         <tr>
-                            <th>IP</th>
+                            <th>
+                                IP<br />
+                                <input type="text" value={this.props.filter.ip} onChange={this.setFilter}/>
+                            </th>
                             <th><a href="#" onClick={() => {this.setOrderBy('browser')}}>Browser</a></th>
                             <th><a href="#" onClick={() => {this.setOrderBy('os')}}>OS</a></th>
                             <th>Source</th>
@@ -109,6 +176,11 @@ class Table extends React.Component {
                         {visitListHtml}
                     </tbody>
                 </table>
+                <nav>
+                    <ul className="pagination">
+                        {nav}
+                    </ul>
+                </nav>
             </div>
         )
     }
