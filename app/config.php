@@ -7,5 +7,5 @@ return [
         'visits'   => __DIR__ . '/../data/visits.txt',
     ],
     'template_path' => __DIR__ . '/templates',
-    'template_cache_path' => __DIR__ . '/../var/cache',
+    'template_cache_path' => false, // Кеш для простоты выключим
 ];

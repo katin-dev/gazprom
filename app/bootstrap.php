@@ -3,6 +3,7 @@
 use App\Action\IndexAction;
 use App\Action\VisitsAction;
 use App\Lib\Container;
+use App\Lib\VisitModel;
 use Slim\App;
 use Slim\Views\Twig;
 
@@ -43,6 +44,10 @@ $container['view'] = function (Container $c) {
     $view->addExtension(new Slim\Views\TwigExtension($c->get('router'), $basePath));
 
     return $view;
+};
+
+$container['visits'] = function (Container $c) {
+    return new VisitModel($c->db);
 };
 
 $app = new App($container);
