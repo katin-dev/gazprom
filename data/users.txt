@@ -1,2 +1,0 @@
-27.209.84.40|Chrome|Windows
-27.209.84.41|Firefox|Linux

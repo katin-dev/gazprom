@@ -5,6 +5,7 @@ var App = function () {
     this.tableTemplate = document.getElementById("entry-template").innerHTML;
     this.sortField = null;
     this.sortOrder = 'asc';
+    this.pageNumber = 0;
 
     this.init = function (container) {
         this.container = $(container);

@@ -110,6 +110,9 @@ class ImportCommand extends Command
         foreach ($reader->getLines() as $row) {
             if ($rowModifier) $row = $rowModifier($row);
 
+            // иногда, бывает, считываем пустую строку (последнюю, например)
+            if (!$row) continue;
+
             $values    = array_merge($values, $row);
             $placeholders[] = '(' . rtrim(str_repeat('?,', count($row)), ',') . ')'; // Делаем конструкцию вида (?, ?, ?)
 
